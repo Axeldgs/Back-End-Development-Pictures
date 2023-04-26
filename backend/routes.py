@@ -35,7 +35,7 @@ def count():
 ######################################################################
 @app.route("/picture", methods=["GET"])
 def get_pictures():
-    pass
+    return data
 
 ######################################################################
 # GET A PICTURE
@@ -44,7 +44,10 @@ def get_pictures():
 
 @app.route("/picture/<int:id>", methods=["GET"])
 def get_picture_by_id(id):
-    pass
+    for picture in data:
+        if picture["id"] == id:
+            return picture
+    return {"message": "Not Found"}, 404
 
 
 ######################################################################
@@ -52,7 +55,16 @@ def get_picture_by_id(id):
 ######################################################################
 @app.route("/picture", methods=["POST"])
 def create_picture():
-    pass
+    pic = request.json
+    print(pic)
+
+    for picture in data:
+        if pic["id"] == picture["id"]:
+            return {"Message": f"picture with id {pic['id']} already present"}, 302
+
+    data.append(pic)
+    return pic, 201
+
 
 ######################################################################
 # UPDATE A PICTURE
@@ -61,11 +73,23 @@ def create_picture():
 
 @app.route("/picture/<int:id>", methods=["PUT"])
 def update_picture(id):
-    pass
+    pic = request.json
+
+    for index, picture in enumerate(data):
+        if picture["id"] == id:
+            data[index] = pic
+            return picture, 201
+
+    return {"message": "picture not found"}, 404
 
 ######################################################################
 # DELETE A PICTURE
 ######################################################################
 @app.route("/picture/<int:id>", methods=["DELETE"])
 def delete_picture(id):
-    pass
+    for picture in data:
+        if picture["id"] == id:
+            data.remove(picture)
+            return "", 204
+
+    return {"message": "picture not found"}, 404
